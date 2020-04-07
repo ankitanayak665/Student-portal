@@ -1,10 +1,12 @@
 const LocalStrategy = require('passport-local').Strategy;
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
-const User= require('./Db/user');
+//const User= require('./Db/user');
 
-//const User = require('../models/User');
-/*module.exports = function(passport) {
+const User= require('../Db/user');
+module.exports = function(passport) {
+	
+
 	passport.use(
 		new LocalStrategy({ usernameField: 'email'},(email,password,done) =>{
 			//Match User
@@ -28,15 +30,19 @@ const User= require('./Db/user');
 					}
 				});
 			
+		});
 		})
-			.catch(err => console.log(err));
+        );
+
+			//.catch(err => console.log(err));
 
 
-})
 
-);
 
-	passport.serializeUser(function(User,done){
+
+
+
+	passport.serializeUser(function(user,done){
      done(null,user.id);
 	});
 
@@ -46,8 +52,8 @@ const User= require('./Db/user');
 		});
 	});
 
-}*/
-module.exports = function(passport) {
+};
+/*module.exports = function(passport) {
 	passport.serializeUser(function(User,done){
      done(null,user.id);
 	});
@@ -78,3 +84,4 @@ module.exports = function(passport) {
    	})
    }))
 }
+*/

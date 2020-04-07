@@ -20,8 +20,7 @@ router.get('/loginsample',(req,res) => res.render('loginsample'));
 router.get('/Dashboard',(req,res) => res.render('Dashboard'));
 
 //Express Session
-
-app.use(session({
+/*app.use(session({
   secret: 'secret',
   resave: true,
   saveUninitialized: true,
@@ -133,7 +132,7 @@ app.use((req,res,next) =>{
 */
 
 //Login Handle
-router.post('/loginsample',(req,res,next) => {
+/* router.post('/loginsample',(req,res,next) => {
 
 passport.authenticate('local',{
 	successRedirect: '/views/Dashboard',
@@ -142,6 +141,6 @@ passport.authenticate('local',{
 
 })(req, res, next);
 
-});
+}); */
 module.exports = router;
 

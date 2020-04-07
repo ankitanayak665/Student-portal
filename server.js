@@ -12,32 +12,50 @@ const session = require('express-session');
 const passport = require('passport')
 const cookieParser = require('cookie-parser')
 
+
 //const User = '../../model/user'
 
 
+//Passport config
 
+require('./config/passport')(passport);
 
+// DB config
+
+const db = require('./keys').mongoURI;
+
+//connection to mongodb
 const connectDb = require('./Db/connection');
 const User= require('./Db/user');
 
 connectDb();
+
+//EJS
+//app.use(expressLayouts);
+//app.set('view engine','ejs');
+
+//Express body parser
 app.use(bodyparser.urlencoded({
 	extended:true
 }));
 app.use(bodyparser.json());
 
+//Express session
 
-
-app.use(cookieParser('secret'));
+//app.use(cookieParser('secret'));
 app.use(session({
 	secret : 'secret',
-	maxAge : 3600000,
+	//maxAge : 3600000,
 	resave : true,
 	saveUninitialized : true
 }));
 
+//Passport middleware
+
 app.use(passport.initialize());
 app.use(passport.session());
+
+//Connect Flash
 
 app.use(flash());
 
@@ -50,16 +68,11 @@ app.use(function(req,res,next){
 	next();
 });
 
-//Passport config
-
-require('./config/passport')(passport);
 
 
 
 
-// DB config
 
-const db = require('./keys').mongoURI;
 
 //connect to mongo
 
@@ -73,7 +86,7 @@ const db = require('./keys').mongoURI;
 
 
 
-
+//Express body parser
 
 app.use(express.urlencoded({ extended : false }));
 
@@ -125,12 +138,15 @@ app.get('/loginsample',(req,res) =>{
 
 
 //Login Handle
-router.post('/loginsample',passport.authentication('local', {
+router.post('/loginsample',(req,res,next) =>{
+	passport.authentication('local', {
 
 	successRedirect: '/views/Dashboard',
 	failureRedirect:'/views/loginsample',
-}));
+	failureFlash: true
+})(req, res, next);
 
+});
 app.get('/signup',(req,res) =>{
 	res.render('signup');
 });
@@ -206,20 +222,7 @@ app.post('/signupreg',async(req,res)=>{
 
 
 
-/*
-    bcrypt.genSalt(10,(err, salt) =>
-          bcrypt.hash(newUser.password,salt,(err,hash) =>{
-          	if(err) throw err;
-          	newUser.password = hash;
-          	newUser.save()
-          	.then(user =>{
-          		res.redirect('loginsample');
-          	})
-          	.catch(err => console.log(err));
 
-          	}))
-        */  
-    
   
 
 //Authentication Strategy
@@ -282,89 +285,15 @@ app.post('/loginsample',(req,res,next)=>{
 }
 catch(error)
 {
-	Response.status(500).send(error);
+
+
+	res.status(500).send(error);
 }
 
 
 
 
-/*
-//check required fields
 
-	if(!username || !pass || !pass2 ){
-		errors.push({msg: 'please fill in all fields'});
-	}
-
-	//check passwords match
-	if(pass!== pass2){
-		errors.push({msg: 'passwords do not match'});
-	}
-
-	//check pass length
-	if(pass.length < 6){
-		errors.push({msg: 'password should be at least 6 characters'});
-
-	}
-
-	if(errors.length > 0) {
-		res.render('signup', {
-			errors,
-			username,
-			pass,
-			pass2
-
-		});
-	}else {
-		//validation passed
-       User.findOne({ pass: pass});
-       .then(user  =>{
-
-	     if(user) {
-	     	//User exists
-	     	errors.push({msg: 'Email is already registered'});
-
-	            
-            res.render('signup', {
-			errors,
-			username,
-			pass,
-			pass2
-
-		});
-
-	     }else {
-	      
-          const newUser = new User({
-	        username,
-	        pass,
-	        pass2
-          });
-
-         //Hash Password
-
-          bcrypt.genSalt(10,(err,salt) =>
-          bcrypt.hash(newUser.password,salt,() =>{
-	        if(err) throw err;
-
-	        //Set password to hashed
-	        newUser.password = hash;
-	        //Save user
-	        newUser.save()
-	        .then(user => {
-	        	req.flash('success_msg','you are now registered and can log in');
-	          res.redirect('/users/loginsample');
-	        })
-	        .catch(err => console.log(err));
-          }))
-
-	     }
-       });
-       
-	}
-}); 
-
-	
-*/
 
 });
 
