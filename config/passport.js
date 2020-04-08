@@ -1,4 +1,50 @@
-const LocalStrategy = require('passport-local').Strategy;
+const localStrategy = require('passport-local').Strategy;
+const bcrypt = require('bcryptjs');
+
+function init(password,getUserByEmail,getUserById) {
+
+   const authenticator = (eamail,password,done) => {
+
+   	//getting the logged in user
+
+   	const user = getUserByEmail(email);
+
+   	if (user == null)
+   	{
+   		return done(null,false,{message:"Wronge Email Address"})
+   	}
+
+   	//compare the hashes of the password
+   	try{
+   		if(await bcrypt.compare(pass,user.pass)){
+   			return done(null,user);
+   		}
+   		else{
+   			return done(null,false{message:"password is incorrect"})
+   		}
+   	} catch (e) {
+   		return done(e);
+          
+   	}
+
+   }
+
+	passport.use(new localStrategy({ usernameField: 'email'},
+		authenticator))
+
+	passport.serializeUser((user,done) => {done(null,user.id)})
+	passport.deserializeUser((id,done )=> {
+		done(null,getUserById(id))
+	})
+}
+
+module.exports = init;
+
+
+
+
+
+/*const LocalStrategy = require('passport-local').Strategy;
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 //const User= require('./Db/user');
@@ -53,35 +99,4 @@ module.exports = function(passport) {
 	});
 
 };
-/*module.exports = function(passport) {
-	passport.serializeUser(function(User,done){
-     done(null,user.id);
-	});
-	passport.deserializeUser(function(User,done){
-		done(null,user.id);
-	});
-
-   passrport.use(new localstrategy(function(email,pass,done){
-   	User.findOne({email:email},function(err,doc){
-   		if(err) { done(err)}
-   			else {
-   				if(doc) {
-                    var valid = doc.comparepass(pass,doc.pass)
-                    if(valid){
-                    	done(null,{
-                    		email:doc.email,
-                    		pass:doc.pass
-                    	})
-                    }
-                    	else{
-                    		done(null, false)
-                    	}
-                    
-   				}else {
-   					done(null,false)
-   				}
-   			}
-   	})
-   }))
-}
 */

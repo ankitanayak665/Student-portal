@@ -1,3 +1,9 @@
+if(process.env.NODE_ENV !== "production"){
+	require('dotenv').config();
+}
+
+
+
 const express = require('express')
 
 const app=express()
@@ -7,9 +13,28 @@ const bodyparser = require('body-parser');
 const bcrypt = require('bcryptjs');
 //const use = require('./model/user');
 const router = express.Router();
-const flash = require('connect-flash');
-const session = require('express-session');
+//const session = require('express-session');
 const passport = require('passport')
+
+const passportConfig = require('./passport-config');
+
+const flash = require('express-flash');
+const session = require('express-session');
+
+
+passportConfig(passport,
+	email => users.find(user => user.email === email),
+     id => users.find(user => user.id === id)),
+
+app.use(flash());
+app.use(session({
+	secret:process.env.SESSION_SECRET,
+	resave:false,
+	saveUninitialized:false
+}))
+app.use(passport.initialize());
+app.use(passport.session());
+
 const cookieParser = require('cookie-parser')
 
 
@@ -18,7 +43,7 @@ const cookieParser = require('cookie-parser')
 
 //Passport config
 
-require('./config/passport')(passport);
+//require('./config/passport')(passport);
 
 // DB config
 
@@ -52,8 +77,8 @@ app.use(session({
 
 //Passport middleware
 
-app.use(passport.initialize());
-app.use(passport.session());
+//app.use(passport.initialize());
+//app.use(passport.session());
 
 //Connect Flash
 
@@ -61,14 +86,14 @@ app.use(flash());
 
 //Global variables
 
-app.use(function(req,res,next){
+/*app.use(function(req,res,next){
 	res.locals.success_message = req.flash('success_message');
 	res.locals.error_message = req.flash('error_message');
 	res.locals.error = req.flash('error');
 	next();
 });
 
-
+*/
 
 
 
@@ -124,6 +149,7 @@ app.use(flash());
 */
 
 
+
 app.get('/',(req,res) =>{
 	res.render('index');
 
@@ -133,9 +159,17 @@ app.get('/loginsample',(req,res) =>{
 //consolre.log('flash', flashMessages);
    res.render('loginsample');
 
+
 });
 
 
+app.post('/loginsample',passport.authenticate('local',{
+successRedirect: './views/Dashboard',
+failureRedirect: '/loginsample',
+failureFlash:true
+}))
+
+/*
 
 //Login Handle
 router.post('/loginsample',(req,res,next) =>{
@@ -146,7 +180,7 @@ router.post('/loginsample',(req,res,next) =>{
 	failureFlash: true
 })(req, res, next);
 
-});
+}); */
 app.get('/signup',(req,res) =>{
 	res.render('signup');
 });
@@ -155,11 +189,12 @@ app.get('/signup',(req,res) =>{
 app.post('/signupreg',async(req,res)=>{
 	try
 	{
+	
 	console.log(req.body);
 	const hashpass = await bcrypt.hash(req.body.pass,10)
-	userSchema.methods.comparepass = function (password,hash) {
-		return bcrypt.compareSync(password,hash)
-	}
+	//userSchema.methods.comparepass = function (password,hash) {
+	//	return bcrypt.compareSync(password,hash)
+	//}
 	const{email,username,pass,pass2} = req.body;
 	let user ={};
 	user.email = email
@@ -222,8 +257,7 @@ app.post('/signupreg',async(req,res)=>{
 
 
 
-
-  
+/*
 
 //Authentication Strategy
 
@@ -271,7 +305,7 @@ app.post('/loginsample',(req,res,next)=>{
 	})(req,res,next);
 });
 	
-   
+   */
      
 
 
@@ -280,7 +314,7 @@ app.post('/loginsample',(req,res,next)=>{
 
 	await userModel.save();
 	//res.json('userModel');
-	res.send("succesfull Register");
+	//res.send("succesfull Register");
 	res.redirect('/loginsample');
 }
 catch(error)
@@ -294,8 +328,11 @@ catch(error)
 
 
 
-
 });
+
+app.get('/Dashboard',(req,res)=> {
+	  res.redirect('/Dashboard');
+
 
 app.get('/Dashboard',(req,res) => {
 	 var data = {name:'vishal',
@@ -324,17 +361,6 @@ app.get('/Dashboard',(req,res) => {
 
 //});
 
-
-
-
-
-
-
-
-
-
-app.get('/login',(req,res)=> {
-	res.render('Dashboard');
 });
 
 

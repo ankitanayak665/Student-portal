@@ -180,31 +180,19 @@ hr {
 
     
    
+<% if (messages.error) {%>
 
+
+<%= message.error %>
+<% } %>
  
 <form action = "/loginsample" method="POST">
-    <% if (success_message != ''){ %>
-
-    <div class="alert alert-dismissible alert-success">
-  <button type="button" class="close" data-dismiss="alert">&times;</button>
-  <strong><%= success_message %></strong> 
-</div>
-    <% }%>
-
-     <% if(error != '') {%>
-     <div class="alert alert-dismissible alert-danger">
-  <button type="button" class="close" data-dismiss="alert">&times;</button>
-  <strong><%= error %></strong> 
-</div>
-   
-    <% } %>
   
-    
 <div class="logtext">Log In</div>
     <br>
   
-<input type="email" name="email" placeholder="Email"/><br /><br />
-<input type="password" name="password" placeholder="Password" id="myInput"/><br /><br /> 
+<input type="email" name="email" id="email" placeholder="Email" required /><br /><br />
+<input type="pass" name="pass"  id="pass" placeholder="Password" id="pass" required /><br /><br /> 
 
 
     <div class="show">

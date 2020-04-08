@@ -134,20 +134,13 @@ color:aliceblue;
 
 <body>
 <div class="signup">
-     <% if(typeof err != 'undefined') {%>
-     <div class="alert alert-dismissible alert-danger">
-  <button type="button" class="close" data-dismiss="alert">&times;</button>
-  <strong><%= err %></strong> 
-</div>
    
-    <% } %>
-  
     <form action="signupreg" method="post">
     <div class="head">Sign up</div>
-     <input type="email" name="email" placeholder="email" value="<%= typeof email != 'undefined' ? email : '' %>"><br><br>
-    <input type="text" name="username" placeholder="Username" value="<%= typeof username != 'undefined' ? username : '' %>"><br><br>                  
-    <input type="password" name="pass" placeholder="Password"><br><br>    
-    <input type="password" name="pass2" placeholder="Confirm Password"><br><br>   
+     <input type="email" name="email"  id="email" placeholder="email"  required/ value="<%= typeof email != 'undefined' ? email : '' %>"><br><br>
+    <input type="text" name="username"  id="username" placeholder="Username" required/ value="<%= typeof username != 'undefined' ? username : '' %>"><br><br>                  
+    <input type="password" name="pass" id="pass" placeholder="Password" required/><br><br>    
+    <input type="password" name="pass2"  id="pass2" placeholder="Confirm Password"><br><br>   
     <input type="submit" value="Sign up" onclick="myFunction()"><br><br>
         <div id="msg">Signed up!</div>
         <script>
